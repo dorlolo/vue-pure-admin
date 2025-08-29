@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, PropType } from "vue";
-import businessCenterIcon from "@/assets/svg/outline-business-center.svg?component";
-import gearWideIcon from "@/assets/svg/gear-wide-connected.svg?component";
-import unknownIcon from "@/assets/svg/unknown.svg?component";
-import More2Fill from "@iconify-icons/ri/more-2-fill";
+import BusinessCenterIcon from "~icons/ri/briefcase-line";
+import GearWideIcon from "~icons/ri/settings-3-line";
+import UnknownIcon from "~icons/ri/question-line";
+import More2Fill from "~icons/ri/more-2-fill";
 
 defineOptions({
   name: "appCard"
@@ -70,9 +70,9 @@ const emptyEvent = () => {
     <div class="list-card-item_detail bg-bg_color">
       <el-row justify="space-between" @click.stop="emptyEvent">
         <div :class="cardLogoClass">
-          <gearWideIcon v-if="app.appType === 1" />
-          <businessCenterIcon v-else-if="app.appType === 2" />
-          <unknownIcon v-else />
+          <GearWideIcon v-if="app.appType === 1" />
+          <BusinessCenterIcon v-else-if="app.appType === 2" />
+          <UnknownIcon v-else />
         </div>
         <div class="list-card-item_detail--operation">
           <el-tag

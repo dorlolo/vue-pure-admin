@@ -5,7 +5,7 @@ import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";
 import { ref, onMounted, nextTick, provide } from "vue";
 import dialogForm from "./components/DialogForm.vue";
-import Search from "@iconify-icons/ep/search";
+import Search from "~icons/ep/search";
 // 跳转详情页
 import { useDetail } from "./hooks";
 
