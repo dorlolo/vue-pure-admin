@@ -24,7 +24,11 @@ export default [
       {
         path: "/redirect/:path(.*)",
         name: "Redirect",
-        component: () => import("@/layout/redirect.vue")
+        component: () => import("@/layout/redirect.vue"),
+        meta: {
+          title: "Redirect",
+          showLink: false
+        }
       }
     ]
   },

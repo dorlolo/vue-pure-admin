@@ -67,7 +67,7 @@ const textClass = computed(() => {
   if (
     layout.value !== "horizontal" &&
     isCollapse.value &&
-    !toRaw(item.meta.icon) &&
+    !toRaw(item?.meta?.icon) &&
     ((layout.value === "vertical" && item.parentId === null) ||
       (layout.value === "mix" && item.pathList.length === 2))
   ) {
@@ -134,26 +134,26 @@ function resolvePath(routePath) {
       v-bind="attrs"
     >
       <div
-        v-if="toRaw(item.meta.icon)"
+        v-if="toRaw(item?.meta?.icon)"
         class="sub-menu-icon"
         :style="getSubMenuIconStyle"
       >
         <component
           :is="
             useRenderIcon(
-              toRaw(onlyOneChild.meta.icon) ||
-                (item.meta && toRaw(item.meta.icon))
+              toRaw(onlyOneChild?.meta?.icon) ||
+                (item?.meta && toRaw(item?.meta?.icon))
             )
           "
         />
       </div>
       <el-text
         v-if="
-          (!item?.meta.icon &&
+          (!item?.meta?.icon &&
             isCollapse &&
             layout === 'vertical' &&
             item?.pathList?.length === 1) ||
-          (!onlyOneChild.meta.icon &&
+          (!onlyOneChild?.meta?.icon &&
             isCollapse &&
             layout === 'mix' &&
             item?.pathList?.length === 2)
@@ -161,7 +161,7 @@ function resolvePath(routePath) {
         truncated
         class="w-full! px-3! min-w-[54px]! text-center! text-inherit!"
       >
-        {{ transformI18n(onlyOneChild.meta.title) }}
+        {{ transformI18n(onlyOneChild?.meta?.title) }}
       </el-text>
 
       <template #title>
@@ -173,9 +173,9 @@ function resolvePath(routePath) {
             }"
             class="w-full! text-inherit!"
           >
-            {{ transformI18n(onlyOneChild.meta.title) }}
+            {{ transformI18n(onlyOneChild?.meta?.title) }}
           </ReText>
-          <SidebarExtraIcon :extraIcon="onlyOneChild.meta.extraIcon" />
+          <SidebarExtraIcon :extraIcon="onlyOneChild?.meta?.extraIcon" />
         </div>
       </template>
     </el-menu-item>
@@ -189,20 +189,20 @@ function resolvePath(routePath) {
   >
     <template #title>
       <div
-        v-if="toRaw(item.meta.icon)"
+        v-if="toRaw(item?.meta?.icon)"
         :style="getSubMenuIconStyle"
         class="sub-menu-icon"
       >
-        <component :is="useRenderIcon(item.meta && toRaw(item.meta.icon))" />
+        <component :is="useRenderIcon(item?.meta && toRaw(item?.meta?.icon))" />
       </div>
       <ReText
         v-if="
-          layout === 'mix' && toRaw(item.meta.icon)
+          layout === 'mix' && toRaw(item?.meta?.icon)
             ? !isCollapse || item?.pathList?.length !== 2
             : !(
                 layout === 'vertical' &&
                 isCollapse &&
-                toRaw(item.meta.icon) &&
+                toRaw(item?.meta?.icon) &&
                 item.parentId === null
               )
         "
@@ -212,9 +212,9 @@ function resolvePath(routePath) {
         }"
         :class="textClass"
       >
-        {{ transformI18n(item.meta.title) }}
+        {{ transformI18n(item?.meta?.title) }}
       </ReText>
-      <SidebarExtraIcon v-if="!isCollapse" :extraIcon="item.meta.extraIcon" />
+      <SidebarExtraIcon v-if="!isCollapse" :extraIcon="item?.meta?.extraIcon" />
     </template>
 
     <sidebar-item

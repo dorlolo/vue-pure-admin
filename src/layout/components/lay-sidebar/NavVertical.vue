@@ -32,6 +32,9 @@ const {
 const subMenuData = ref([]);
 
 const menuData = computed(() => {
+  console.log("subMenuData.value", subMenuData.value);
+  console.log("usePermissionStoreHook().wholeMenus", usePermissionStoreHook().wholeMenus);
+  console.log("pureApp.layout === mix && device.value !== mobile",pureApp.layout === "mix" && device.value !== "mobile")
   return pureApp.layout === "mix" && device.value !== "mobile"
     ? subMenuData.value
     : usePermissionStoreHook().wholeMenus;

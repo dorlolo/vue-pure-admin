@@ -151,20 +151,24 @@ function addPathMatch() {
 
 /** 处理动态路由（后端返回的路由） */
 function handleAsyncRoutes(routeList) {
-  console.log("routeList", routeList);
   if (routeList.length === 0) {
     usePermissionStoreHook().handleWholeMenus(routeList);
   } else {
     formatFlatteningRoutes(addAsyncRoutes(routeList)).map(
       (v: RouteRecordRaw) => {
+        console.log("router.options.routes", router.options.routes);
+        console.log("router.options.routes[0].name", router.options.routes[0].name);
         // 防止重复添加路由
-        if (
+        if (!router.options.routes || !router.options.routes[0].children) {
+          return
+        } else if (
           router.options.routes[0].children.findIndex(
             value => value.path === v.path
           ) !== -1
         ) {
           return;
         } else {
+          console.log("router.options.routes[0].children", router.options.routes[0].children)
           // 切记将路由push到routes后还需要使用addRoute，这样路由才能正常跳转
           router.options.routes[0].children.push(v);
           // 最终路由进行升序
@@ -177,6 +181,7 @@ function handleAsyncRoutes(routeList) {
           flattenRouters.children = router.options.routes[0].children;
           router.addRoute(flattenRouters);
         }
+        console.log("finish");
       }
     );
     usePermissionStoreHook().handleWholeMenus(routeList);
