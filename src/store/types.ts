@@ -1,5 +1,5 @@
 import type { RouteRecordName } from "vue-router";
-
+import { simpleAuthority } from "@/api/user";
 export type cacheType = {
   mode: string;
   name?: RouteRecordName;
@@ -38,10 +38,16 @@ export type setType = {
 };
 
 export type userType = {
+  // username?: string;
+  // roles?: Array<simpleAuthority>;
+  // selectrole?: string;
+  // userAvatar?: string;
+  // permissions?: Array<string>;
   avatar?: string;
   username?: string;
   nickname?: string;
-  roles?: Array<string>;
+  roles?: Array<simpleAuthority>;
+  selectRole?: string;
   permissions?: Array<string>;
   verifyCode?: string;
   currentPage?: number;

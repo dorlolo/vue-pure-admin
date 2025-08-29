@@ -37,7 +37,7 @@ import Keyhole from "~icons/ri/shield-keyhole-line";
 defineOptions({
   name: "Login"
 });
-
+const { roles } = useNav();
 const imgCode = ref("");
 const loginDay = ref(7);
 const router = useRouter();
@@ -60,10 +60,15 @@ const { locale, translationCh, translationEn } = useTranslationLang();
 const ruleForm = reactive({
   username: "admin",
   password: "admin123",
-  verifyCode: ""
+  captchaId: "",
+  captcha: ""
 });
-
+const captchaIdChange = (imgId: string): void => {
+  ruleForm.captchaId = imgId;
+};
 const onLogin = async (formEl: FormInstance | undefined) => {
+
+  loading.value = true;
   if (!formEl) return;
   await formEl.validate(valid => {
     if (valid) {
@@ -71,25 +76,52 @@ const onLogin = async (formEl: FormInstance | undefined) => {
       useUserStoreHook()
         .loginByUsername({
           username: ruleForm.username,
-          password: ruleForm.password
+          password: ruleForm.password,
+          captchaId: ruleForm.captchaId,
+          captcha: ruleForm.captcha
         })
         .then(res => {
-          if (res.success) {
+           if (res.code === 0) {
+
             // 获取后端路由
             return initRouter().then(() => {
               disabled.value = true;
-              router
-                .push(getTopMenu(true).path)
-                .then(() => {
-                  message(t("login.pureLoginSuccess"), { type: "success" });
-                })
-                .finally(() => (disabled.value = false));
+              let topMenu = "";
+              // 重新获取roles值，因为在setToken后store已经更新
+              const currentRoles = useUserStoreHook().roles;
+              const targetRole = currentRoles.find(element => element.authorityId === res.data.authorityId);
+              if (targetRole && targetRole.defaultMenu) {
+                topMenu = targetRole.defaultMenu;
+              }else{
+                topMenu = getTopMenu(true).path;
+              }
+              router.push(topMenu).then(() => {
+                message(t("login.pureLoginSuccess"), { type: "success" });
+              }).finally(() => {
+                loading.value = false;
+              });
             });
           } else {
-            message(t("login.pureLoginFail"), { type: "error" });
+            loading.value = false;
+            message(res.notice, { type: "error" });
           }
+
+          // if (res.success) {
+          //   // 获取后端路由
+          //   return initRouter().then(() => {
+          //     disabled.value = true;
+          //     router
+          //       .push(getTopMenu(true).path)
+          //       .then(() => {
+          //         message(t("login.pureLoginSuccess"), { type: "success" });
+          //       })
+          //       .finally(() => (disabled.value = false));
+          //   });
+          // } else {
+          //   message(t("login.pureLoginFail"), { type: "error" });
+          // }
         })
-        .finally(() => (loading.value = false));
+        // .finally(() => (loading.value = false));
     }
   });
 };
@@ -109,9 +141,9 @@ useEventListener(document, "keydown", ({ code }) => {
     immediateDebounce(ruleFormRef.value);
 });
 
-watch(imgCode, value => {
-  useUserStoreHook().SET_VERIFYCODE(value);
-});
+// watch(imgCode, value => {
+//   useUserStoreHook().SET_VERIFYCODE(value);
+// });
 watch(checked, bool => {
   useUserStoreHook().SET_ISREMEMBERED(bool);
 });
@@ -222,13 +254,15 @@ watch(loginDay, value => {
             <Motion :delay="200">
               <el-form-item prop="verifyCode">
                 <el-input
-                  v-model="ruleForm.verifyCode"
+                  v-model="ruleForm.captcha"
                   clearable
                   :placeholder="t('login.pureVerifyCode')"
                   :prefix-icon="useRenderIcon(Keyhole)"
                 >
                   <template v-slot:append>
-                    <ReImageVerify v-model:code="imgCode" />
+                    <ReImageVerify  
+                      v-model:captchaId="ruleForm.captchaId"
+                      @captchaIdChange="captchaIdChange" />
                   </template>
                 </el-input>
               </el-form-item>

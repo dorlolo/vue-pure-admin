@@ -7,31 +7,43 @@ defineOptions({
 });
 
 interface Props {
-  code?: string;
+  img?: string;
+  imgId?: string;
 }
 
 interface Emits {
-  (e: "update:code", code: string): void;
+  (e: "imgChange", img: string): void;
+  (e: "captchaIdChange", imgId: string): void;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  code: ""
+  img: "",
+  ImgId: ""
 });
 
 const emit = defineEmits<Emits>();
 
-const { domRef, imgCode, setImgCode, getImgCode } = useImageVerify();
+const { domRef, bs64Img, captchaId, setBs64Img, setCaptchaId, getImgCode } =
+  useImageVerify();
 
 watch(
-  () => props.code,
+  () => props.img,
   newValue => {
-    setImgCode(newValue);
+    setBs64Img(newValue);
   }
 );
-watch(imgCode, newValue => {
-  emit("update:code", newValue);
+watch(
+  () => props.imgId,
+  newValue => {
+    setCaptchaId(newValue);
+  }
+);
+watch(bs64Img, newValue => {
+  emit("imgChange", newValue);
 });
-
+watch(captchaId, newValue => {
+  emit("captchaIdChange", newValue);
+});
 defineExpose({ getImgCode });
 </script>
 

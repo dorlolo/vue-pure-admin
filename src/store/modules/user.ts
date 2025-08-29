@@ -7,12 +7,9 @@ import {
   routerArrays,
   storageLocal
 } from "../utils";
-import {
-  type UserResult,
-  type RefreshTokenResult,
-  getLogin,
-  refreshTokenApi
-} from "@/api/user";
+import { getLogin, simpleAuthority, UserResult, userInfo } from "@/api/user";
+import { Logout } from "@/api/user";
+// import { createWebSocket, sendWsMessage } from "@/api/socket";
 import { useMultiTagsStoreHook } from "./multiTags";
 import { type DataInfo, setToken, removeToken, userKey } from "@/utils/auth";
 
@@ -21,11 +18,12 @@ export const useUserStore = defineStore("pure-user", {
     // 头像
     avatar: storageLocal().getItem<DataInfo<number>>(userKey)?.avatar ?? "",
     // 用户名
-    username: storageLocal().getItem<DataInfo<number>>(userKey)?.username ?? "",
-    // 昵称
-    nickname: storageLocal().getItem<DataInfo<number>>(userKey)?.nickname ?? "",
+    username: storageLocal().getItem<DataInfo<number>>(userKey)?.userName ?? "",
     // 页面级别权限
     roles: storageLocal().getItem<DataInfo<number>>(userKey)?.roles ?? [],
+    //当前选择的角色
+    selectRole:
+      storageLocal().getItem<DataInfo<number>>(userKey)?.selectRole ?? "",
     // 按钮级别权限
     permissions:
       storageLocal().getItem<DataInfo<number>>(userKey)?.permissions ?? [],
@@ -52,16 +50,22 @@ export const useUserStore = defineStore("pure-user", {
       this.nickname = nickname;
     },
     /** 存储角色 */
-    SET_ROLES(roles: Array<string>) {
+    SET_ROLES(roles: Array<simpleAuthority>) {
       this.roles = roles;
+    },
+    /** 存储选择的角色 */
+    SET_SELECT_ROLE(role: string) {
+      console.log("SET_SELECT_ROLE", role);
+      this.selectRole = role;
+    },
+    /** 存储头像 */
+    SET_USER_AVATAR(userAvatar: string) {
+      // console.log("SET_USER_AVATAR", userAvatar);
+      this.avatar = userAvatar;
     },
     /** 存储按钮级别权限 */
     SET_PERMS(permissions: Array<string>) {
       this.permissions = permissions;
-    },
-    /** 存储前端生成的验证码 */
-    SET_VERIFYCODE(verifyCode: string) {
-      this.verifyCode = verifyCode;
     },
     /** 存储登录页面显示哪个组件 */
     SET_CURRENTPAGE(value: number) {
@@ -79,9 +83,21 @@ export const useUserStore = defineStore("pure-user", {
     async loginByUsername(data) {
       return new Promise<UserResult>((resolve, reject) => {
         getLogin(data)
-          .then(data => {
-            if (data?.success) setToken(data.data);
-            resolve(data);
+          .then(response => {
+            if (response.code === 0) {
+              const tokenData = userInfoToDataInfo(response.data);
+              setToken(tokenData);
+              // todo 先禁用websocket连接
+              // console.log("websocket建立连接,ws:", response.data.ws);
+              // createWebSocket(response.data.uuid, response.data.ws);
+              // sendWsMessage({
+              //   type: "register",
+              //   to: "0",
+              //   from: "" + response.data.uuid,
+              //   content: response.data.ws
+              // });
+            }
+            resolve(response);
           })
           .catch(error => {
             reject(error);
@@ -98,24 +114,19 @@ export const useUserStore = defineStore("pure-user", {
       resetRouter();
       router.push("/login");
     },
-    /** 刷新`token` */
-    async handRefreshToken(data) {
-      return new Promise<RefreshTokenResult>((resolve, reject) => {
-        refreshTokenApi(data)
-          .then(data => {
-            if (data) {
-              setToken(data.data);
-              resolve(data);
-            }
-          })
-          .catch(error => {
-            reject(error);
-          });
-      });
-    }
   }
 });
 
 export function useUserStoreHook() {
   return useUserStore(store);
+}
+function userInfoToDataInfo(user: userInfo): DataInfo<number> {
+  return {
+    userName: user.userName,
+    nickName: user.nickName,
+    avatar: user.avatar,
+    roles: user.authority ?? [],
+    selectRole: user.authorityId,
+    permissions: [] // 如果有权限字段请补充
+  };
 }

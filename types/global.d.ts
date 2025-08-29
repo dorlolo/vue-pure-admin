@@ -70,6 +70,9 @@ declare global {
     VITE_CDN: boolean;
     VITE_HIDE_HOME: string;
     VITE_COMPRESSION: ViteCompression;
+    VITE_BACKEND_URL: string;
+    VITE_WEBSOCKET_URL: string;
+    VITE_MEDIA_SAVE_AT: string;
   }
 
   /**
