@@ -186,3 +186,29 @@ export const handleTree = (
   }
   return tree;
 };
+
+/**
+ * @description 优化父子关系, 当数组中存在元素父级时，则删除父级。此函数用于优化树形组件默认选中的元素
+ * @param tree 树
+ * @param pathList 每一项的id组成的数组
+ * @returns 组件唯一uniqueId后的树
+ */
+export const filterParent = (list: any[]): any[] => {
+  const newList = [];
+  if (!Array.isArray(list)) {
+    console.warn("menuTree must be an array");
+    return [];
+  }
+  if (!list || list.length === 0) return [];
+  for (const [_, node] of list.entries()) {
+    if (node.parentId === 0) {
+      list.forEach(check => {
+        if (check.parentId === node.id) {
+          newList.push(check.id);
+        }
+      });
+    }
+  }
+  console.log("newlist:", newList);
+  return newList;
+};
