@@ -2,7 +2,7 @@
 import { reactive, ref } from "vue";
 import { formUpload } from "@/api/mock";
 import { message } from "@/utils/message";
-import { type UserInfo, getMine } from "@/api/user";
+import { type userInfo, GetMine } from "@/api/user";
 import type { FormInstance, FormRules } from "element-plus";
 import ReCropperPreview from "@/components/ReCropperPreview";
 import { createFormData, deviceDetection } from "@pureadmin/utils";
@@ -27,8 +27,8 @@ const userInfos = reactive({
   description: ""
 });
 
-const rules = reactive<FormRules<UserInfo>>({
-  nickname: [{ required: true, message: "昵称必填", trigger: "blur" }]
+const rules = reactive<FormRules<userInfo>>({
+  nickName: [{ required: true, message: "昵称必填", trigger: "blur" }]
 });
 
 function queryEmail(queryString, callback) {
@@ -98,8 +98,8 @@ const onSubmit = async (formEl: FormInstance) => {
   });
 };
 
-getMine().then(res => {
-  Object.assign(userInfos, res.data);
+GetMine().then(res => {
+  Object.assign(userInfos, res);
 });
 </script>
 
