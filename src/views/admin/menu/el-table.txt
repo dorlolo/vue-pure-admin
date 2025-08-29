@@ -1,0 +1,62 @@
+<template>
+  <div>hold on</div>
+  <!-- <el-table
+    :data="tableData"
+    style="width: 100%"
+    @selection-change="onSelectionChange"
+  >
+    <el-table-column prop="id" label="ID" min-width="65" />
+    <el-table-column prop="parentPath" label="父级菜单" min-width="120" />
+    <el-table-column prop="name" label="组件名称" min-width="120">
+      <template #default="scope">
+        <el-tag v-if="scope.row.parentId === 0" class="ml-2" type="info"
+          >无</el-tag
+        >
+        <div v-else class="cell">
+          {{ scope.row.name }}
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column prop="autoEnable" label="自动授权" min-width="96">
+      <template #default="scope">
+        <div class="cell">{{ scope.row.autoEnable === 1 ? "是" : "否" }}</div>
+      </template>
+    </el-table-column>
+    <el-table-column prop="path" label="文件路径" min-width="120" />
+    <el-table-column prop="component" label="组件" min-width="120" />
+    <el-table-column prop="title" label="标题" min-width="120" />
+    <el-table-column prop="icon" label="图标" min-width="120" />
+    <el-table-column prop="rank" label="排序" min-width="80" :type="'number'" />
+    <el-table-column prop="showParent" label="显示父级" min-width="80">
+      <template #default="scope">
+        <div class="cell">{{ scope.row.showParent ? "是" : "否" }}</div>
+      </template>
+    </el-table-column>
+    <el-table-column prop="keepAlive" label="页面缓存" min-width="80">
+      <template #default="scope">
+        <div class="cell">{{ scope.row.keepAlive ? "是" : "否" }}</div>
+      </template>
+    </el-table-column>
+    <el-table-column prop="showLink" label="展示状态" min-width="80">
+      <template #default="scope">
+        <div class="cell">{{ scope.row.showLink ? "展示" : "隐藏" }}</div>
+      </template>
+    </el-table-column>
+    <el-table-column fixed="right" label="操作" width="150">
+      <template #default="scope">
+        <el-button
+          type="primary"
+          size="small"
+          @click="onEdit(scope.$index, scope.row)"
+          >编辑</el-button
+        >
+        <el-button
+          type="danger"
+          size="small"
+          @click="onOpenDeleteDialog(scope.row)"
+          >删除</el-button
+        >
+      </template>
+    </el-table-column>
+  </el-table> -->
+</template>
