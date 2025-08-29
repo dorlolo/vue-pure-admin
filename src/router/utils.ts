@@ -85,8 +85,10 @@ function isOneOfArray(a: Array<string>, b: Array<string>) {
 function filterNoPermissionTree(data: RouteComponent[]) {
   const currentRoles =
     storageLocal().getItem<DataInfo<number>>(userKey)?.roles ?? [];
+  // 角色转为字符串列表
+  const rolesList = currentRoles.map((v: any) => v.authorityId);
   const newTree = cloneDeep(data).filter((v: any) =>
-    isOneOfArray(v.meta?.roles, currentRoles)
+    isOneOfArray(v.meta?.roles, rolesList)
   );
   newTree.forEach(
     (v: any) => v.children && (v.children = filterNoPermissionTree(v.children))
