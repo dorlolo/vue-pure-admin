@@ -11,10 +11,11 @@ export default defineFakeRoute([
           success: true,
           data: {
             avatar: "https://avatars.githubusercontent.com/u/44761321",
-            username: "admin",
-            nickname: "小铭",
+            userName: "admin",
+            nickName: "小铭",
             // 一个用户可能有多个角色
-            roles: ["admin"],
+            authority: [{authorityId: "0001", name: "管理员", defaultMenu: "/welcome"}],
+            authorityId: "0001",
             // 按钮级别权限
             permissions: ["*:*:*"],
             accessToken: "eyJhbGciOiJIUzUxMiJ9.admin",
@@ -27,9 +28,10 @@ export default defineFakeRoute([
           success: true,
           data: {
             avatar: "https://avatars.githubusercontent.com/u/52823142",
-            username: "common",
-            nickname: "小林",
-            roles: ["common"],
+            userName: "common",
+            nickName: "小林",
+            authority: [{authorityId: "common", name: "普通用户", defaultMenu: "/welcome"}],
+            authorityId: "common",
             permissions: ["permission:btn:add", "permission:btn:edit"],
             accessToken: "eyJhbGciOiJIUzUxMiJ9.common",
             refreshToken: "eyJhbGciOiJIUzUxMiJ9.commonRefresh",

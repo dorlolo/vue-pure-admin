@@ -7,7 +7,7 @@ import {
   routerArrays,
   storageLocal
 } from "../utils";
-import { getLogin, simpleAuthority, UserResult, userInfo } from "@/api/user";
+import { getLogin, simpleAuthority, UserResult, UserInfo } from "@/api/user";
 import { Logout } from "@/api/user";
 // import { createWebSocket, sendWsMessage } from "@/api/socket";
 import { useMultiTagsStoreHook } from "./multiTags";
@@ -120,7 +120,7 @@ export const useUserStore = defineStore("pure-user", {
 export function useUserStoreHook() {
   return useUserStore(store);
 }
-function userInfoToDataInfo(user: userInfo): DataInfo<number> {
+function userInfoToDataInfo(user: UserInfo): DataInfo<number> {
   return {
     userName: user.userName,
     nickName: user.nickName,
