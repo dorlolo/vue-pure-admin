@@ -4,6 +4,7 @@ import type { FormInstance } from "element-plus";
 import warningBar from "@/components/warningBar/warningBar.vue";
 import menuInput from "@/components/app/appMenuInput.vue";
 import { message } from "@/utils/message";
+import  AddIcon from "~icons/ri/add-line"
 import {
   AppMenuType,
   deleteAppMenus,
@@ -243,11 +244,11 @@ const updateDropDownNotice = ref(0);
 <template>
   <div class="gva-btn-list">
     <el-button type="primary" @click="openDialog('create')"
-      ><img
-        height="18"
-        width="18"
-        src="../../../assets/svg/add-line.svg"
-      />添加</el-button
+      ><el-icon class="el-input__icon">
+            <IconifyIconOffline
+              :icon="AddIcon"
+            />
+          </el-icon>添加</el-button
     >
   </div>
   <!-- table数据 -->

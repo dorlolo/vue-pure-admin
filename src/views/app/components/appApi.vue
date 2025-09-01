@@ -4,7 +4,7 @@ import { message } from "@/utils/message";
 import type { FormInstance } from "element-plus";
 import { ApiType, createApi, deleteApis, updateApi } from "@/api/appApi";
 import warningBar from "@/components/warningBar/warningBar.vue";
-
+import AddIcon from "~icons/ri/add-line"
 defineOptions({
   name: "appMenu"
 });
@@ -203,11 +203,11 @@ const enterDialog = async (formEl: FormInstance | undefined) => {
 <template>
   <div class="gva-btn-list">
     <el-button type="primary" @click="openDialog('addApi')"
-      ><img
-        height="18"
-        width="18"
-        src="../../../assets/svg/add-line.svg"
-      />添加</el-button
+      ><el-icon class="el-input__icon">
+            <IconifyIconOffline
+              :icon="AddIcon"
+            />
+          </el-icon>添加</el-button
     >
   </div>
   <el-table
