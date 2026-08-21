@@ -1,5 +1,6 @@
 import Sortable from "sortablejs";
 import { $t, transformI18n } from "@/plugins/i18n";
+import type { CheckboxValueType } from "element-plus";
 import { useEpThemeStoreHook } from "@/store/modules/epTheme";
 import { delay, cloneDeep, getKeyList } from "@pureadmin/utils";
 import {
@@ -12,7 +13,9 @@ import {
   getCurrentInstance
 } from "vue";
 
+import PinAngle from "~icons/bi/pin-angle";
 import Fullscreen from "~icons/ri/fullscreen-fill";
+import PinAngleFill from "~icons/bi/pin-angle-fill";
 import ExitFullscreen from "~icons/ri/fullscreen-exit-fill";
 import DragIcon from "@/assets/table-bar/drag.svg?component";
 import ExpandIcon from "@/assets/table-bar/expand.svg?component";
@@ -125,18 +128,28 @@ export default defineComponent({
       props.vxeTableRef.reloadColumn(curCheckedColumns);
     }
 
-    function handleCheckAllChange(val: boolean) {
+    function handleCheckAllChange(val: CheckboxValueType) {
       checkedColumns.value = val ? checkColumnList : [];
       isIndeterminate.value = false;
       reloadColumn();
     }
 
-    function handleCheckedColumnsChange(value: string[]) {
+    function handleCheckedColumnsChange(value: CheckboxValueType[]) {
       checkedColumns.value = value;
       const checkedCount = value.length;
       checkAll.value = checkedCount === checkColumnList.length;
       isIndeterminate.value =
         checkedCount > 0 && checkedCount < checkColumnList.length;
+    }
+
+    function handleToggleColumnFixed(fixed, label: string) {
+      const column = dynamicColumns.value.find(
+        item => transformI18n(item.title) === transformI18n(label)
+      );
+      if (column) {
+        column.fixed = fixed;
+        reloadColumn();
+      }
     }
 
     async function onReset() {
@@ -215,12 +228,14 @@ export default defineComponent({
       });
     };
 
-    const isFixedColumn = (title: string) => {
-      return dynamicColumns.value.filter(
-        item => transformI18n(item.title) === transformI18n(title)
-      )[0].fixed
-        ? true
-        : false;
+    const isFixedColumn = (label: string) => {
+      const column = dynamicColumns.value.find(
+        item => transformI18n(item.title) === transformI18n(label)
+      );
+      const fixedOption = column?.fixed;
+      const left = fixedOption === "left";
+      const right = fixedOption === true || fixedOption === "right";
+      return { fixed: left || right, left, right };
     };
 
     const rendTippyProps = (content: string) => {
@@ -313,7 +328,7 @@ export default defineComponent({
                 v-slots={reference}
                 placement="bottom-start"
                 popper-style={{ padding: 0 }}
-                width="200"
+                width="245"
                 trigger="click"
               >
                 <div class={[topClass.value]}>
@@ -342,14 +357,13 @@ export default defineComponent({
                         size={0}
                       >
                         {checkColumnList.map((item, index) => {
+                          const { fixed, left, right } = isFixedColumn(item);
                           return (
                             <div class="flex items-center">
                               <DragIcon
                                 class={[
                                   "drag-btn w-4 mr-2",
-                                  isFixedColumn(item)
-                                    ? "cursor-no-drop!"
-                                    : "cursor-grab!"
+                                  fixed ? "cursor-no-drop!" : "cursor-grab!"
                                 ]}
                                 onMouseenter={(event: {
                                   preventDefault: () => void;
@@ -368,6 +382,49 @@ export default defineComponent({
                                   {transformI18n(item)}
                                 </span>
                               </el-checkbox>
+                              <iconify-icon-offline
+                                class={[
+                                  "ml-2",
+                                  "size-4",
+                                  "hover:text-primary",
+                                  "cursor-pointer",
+                                  left ? "text-primary" : ""
+                                ]}
+                                icon={left ? PinAngleFill : PinAngle}
+                                v-tippy={
+                                  left
+                                    ? transformI18n($t("tableBar.pureUnpin"))
+                                    : transformI18n($t("tableBar.purePinLeft"))
+                                }
+                                onClick={() =>
+                                  handleToggleColumnFixed(
+                                    left ? false : "left",
+                                    item
+                                  )
+                                }
+                              />
+                              <iconify-icon-offline
+                                class={[
+                                  "ml-2",
+                                  "size-4",
+                                  "hover:text-primary",
+                                  "scale-x-[-1]",
+                                  "cursor-pointer",
+                                  right ? "text-primary" : ""
+                                ]}
+                                icon={right ? PinAngleFill : PinAngle}
+                                v-tippy={
+                                  right
+                                    ? transformI18n($t("tableBar.pureUnpin"))
+                                    : transformI18n($t("tableBar.purePinRight"))
+                                }
+                                onClick={() =>
+                                  handleToggleColumnFixed(
+                                    right ? false : "right",
+                                    item
+                                  )
+                                }
+                              />
                             </div>
                           );
                         })}
@@ -378,7 +435,7 @@ export default defineComponent({
               </el-popover>
               <el-divider direction="vertical" />
 
-              <iconifyIconOffline
+              <iconify-icon-offline
                 class={["w-4", iconClass.value]}
                 icon={isFullscreen.value ? ExitFullscreen : Fullscreen}
                 v-tippy={
